@@ -5,24 +5,19 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-
 // Initialize variables
 var app = express();
 
 // Configure cors
 app.use(cors());
 
+// Json read and parse. 
+app.use( express.json() ); 
+
 dbConnection();
 
-// Paths
-app.get('/', (req, res, next) => {
-
-    res.status(200).json({
-        ok: true,
-        message: 'Request done successfully'
-    });
-});
-
+// Routes
+app.use('/api/users', require('./routes/users'))
 
 // Listen requests
 app.listen(process.env.PORT, () => {
