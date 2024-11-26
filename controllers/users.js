@@ -12,7 +12,7 @@ const getUsers = async (request, response) => {
     });
 }
 
-const addUser = async (request, response = response) => {
+const addUser = async (request, res = response) => {
 
     const { email, password, name } = request.body;
 
@@ -21,7 +21,7 @@ const addUser = async (request, response = response) => {
         const emailRegistered = await User.findOne({ email });    
 
         if(emailRegistered) {
-            return response.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 message: 'Email already registered.'
             });
@@ -32,14 +32,14 @@ const addUser = async (request, response = response) => {
         //Save user info into database.
         await user.save();
     
-        response.json({
+        res.json({
             ok: true,
             user
         });
 
     } catch (error) {
         console.log(error);
-        response.status(500).json({
+        res.status(500).json({
             ok: false,
             message: 'Unexpected error'
         })
