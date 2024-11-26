@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { getUsers, addUser, updateUser } = require('../controllers/users');
+const { getUsers, addUser, updateUser, deleteUSer } = require('../controllers/users');
 const { validateFields } = require('../middlewares/validate-fields');
 
 const router = Router();
@@ -32,5 +32,10 @@ router.put('/:id',
     ], 
     updateUser
 );
+
+router.delete('/:id',   
+    deleteUSer
+);
+
 
 module.exports = router;
