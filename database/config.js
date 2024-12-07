@@ -5,10 +5,7 @@ const dbConnection = async() => {
 
     try {
         mongoose.set('strictQuery', false);
-        await mongoose.connect(process.env.DB_CONN_STR, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });     
+        await mongoose.connect(process.env.DB_CONN_STR);     
         
         console.log('Database online.');
         
