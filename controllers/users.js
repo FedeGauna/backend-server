@@ -6,11 +6,28 @@ const User = require('../models/user');
 
 const getUsers = async (request, response) => {
 
-    const users = await User.find({}, 'name email role google');
+    const from = Number( request.query.from ) || 0;
+    
+    const [ users, total ] = await Promise.all([
+        /* Define pagination 
+           skip: start from record number (from)
+           limit: records per page 
+        */ 
+        User.find({}, 'name email role google')
+            .skip( from )
+            .limit( 5 ),
+        /* 
+           Count total records in db users.
+           NOTE: count() is deprecated, just valid to chain with find(). Use countDocuments() instead. 
+           Ref: https://www.mongodb.com/docs/manual/reference/method/db.collection.count/
+        */ 
+        User.countDocuments()
+    ]);
 
     response.json({
         ok: true,
-        users
+        users,
+        total
     });
 }
 
