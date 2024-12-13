@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { getUsers, addUser, updateUser, deleteUSer } = require('../controllers/users');
+const { getUsers, addUser, updateUser, deleteUser } = require('../controllers/users');
 const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-jwt');
 
@@ -37,7 +37,7 @@ router.put('/:id',
 
 router.delete('/:id',   
     validateJWT,
-    deleteUSer
+    deleteUser
 );
 
 

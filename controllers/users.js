@@ -120,7 +120,7 @@ const updateUser = async (req, res = response) => {
     }
 }
 
-const deleteUSer = async(req, res = response) => {
+const deleteUser = async(req, res = response) => {
 
     const id = req.params.id;
 
@@ -156,5 +156,5 @@ module.exports = {
     getUsers,
     addUser,
     updateUser,
-    deleteUSer
+    deleteUser
 }
