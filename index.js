@@ -17,6 +17,7 @@ app.use( express.json() );
 dbConnection();
 
 // Routes
+app.use('/api/upload', require('./routes/upload'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/hospitals', require('./routes/hospitals'));
