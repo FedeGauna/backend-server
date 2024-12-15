@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { getAll } = require('../controllers/search');
+const { getAll, getAllByEntity } = require('../controllers/search');
 const { validateJWT } = require('../middlewares/validate-jwt');
 const router = Router();
 
@@ -9,5 +9,6 @@ const router = Router();
 */
 
 router.get('/:term', validateJWT, getAll );
+router.get('/documents/:entity/:term', validateJWT, getAllByEntity );
 
 module.exports = router;
