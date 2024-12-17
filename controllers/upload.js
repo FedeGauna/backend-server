@@ -1,5 +1,8 @@
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const fs = require('fs');
+
 const { updateImage } = require('../helpers/update-image');
 
 const fileUpload = async (req, res = response) => {
@@ -58,6 +61,26 @@ const fileUpload = async (req, res = response) => {
     });
 }
 
+const getImage = ( req, res = response) => {
+
+    const entity = req.params.entity;
+    const image = req.params.image;
+
+    const pathImage = path.join( __dirname, `../uploads/${ entity }/${  image }`);
+    //NOTE: It is needed to add a picture in /uploads/extra 
+    //      with the image to be displayed by default
+    //      when the searched image is not found.
+    //       
+    const pathDefaultImage = path.join( __dirname, `../uploads/extra/no image.jpg`);
+
+    if ( fs.existsSync( pathImage ) ) {        
+        res.sendFile( pathImage );
+    } else {        
+        res.sendFile( pathDefaultImage );
+    }
+}
+
 module.exports = {
-    fileUpload
+    fileUpload,
+    getImage
 }
