@@ -1,5 +1,6 @@
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
+const { updateImage } = require('../helpers/update-image');
 
 const fileUpload = async (req, res = response) => {
 
@@ -46,6 +47,8 @@ const fileUpload = async (req, res = response) => {
                 message: 'There was an error when moving the image'
             });            
         }
+
+        updateImage( entity, id, fileName );
 
         res.json({
             ok: true,

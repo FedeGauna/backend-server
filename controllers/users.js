@@ -13,7 +13,7 @@ const getUsers = async (request, response) => {
            skip: start from record number (from)
            limit: records per page 
         */ 
-        User.find({}, 'name email role google')
+        User.find({}, 'name email role google img')
             .skip( from )
             .limit( 5 ),
         /* 
