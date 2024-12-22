@@ -2,6 +2,7 @@ const { response } = require('express');
 const  User  = require('../models/user');
 const bcrypt = require('bcryptjs');
 const { generateToken } = require('../helpers/jwt');
+const { googleVerify } = require('../helpers/google-verify');
 
 const login = async(req, res = response) => {
 
@@ -46,6 +47,52 @@ const login = async(req, res = response) => {
     }
 }
 
+const googleSignIn = async(req, res = response) => {
+
+    try {
+
+        const { email, name, picture } = await googleVerify( req.body.token );       
+        
+        const userDB = await User.findOne({ email });
+        let user;
+
+        if( !userDB ) {
+            user = new User({
+                name,
+                email,
+                password: '@@@', //To pass the required validation. 
+                img: picture,
+                google: true
+            })
+        } else {
+            user = userDB;
+            user.google = true;
+        }
+
+        await user.save();
+
+        //Generate a token - JWT.
+        const token = await generateToken( user.id );
+    
+        res.json({
+            ok: true,
+            email,
+            name,
+            picture,
+            token
+        });
+
+    } catch (error) {
+
+        console.log(error);        
+        res.status(400).json({
+            ok: false,
+            message: 'Something went wrong while trying to verify the token.'
+        })        
+    }
+}
+
 module. exports = {
-    login
+    login,
+    googleSignIn
 }

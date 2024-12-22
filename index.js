@@ -11,6 +11,13 @@ var app = express();
 // Configure cors
 app.use(cors());
 
+/*Public folder: 
+
+ It can be used to add an index.html and verify 
+ functionalities such as the button to log in with Google. 
+*/
+app.use( express.static('public') );
+
 // Json read and parse. 
 app.use( express.json() ); 
 
