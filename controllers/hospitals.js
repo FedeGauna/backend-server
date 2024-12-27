@@ -1,7 +1,6 @@
 const { response } = require('express');
 
 const Hospital = require('../models/hospital');
-const user = require('../models/user');
 
 const getHospitals = async ( req, res = response) => {
 
@@ -42,20 +41,76 @@ const addHospital = async ( req, res = response) => {
     }
 }
 
-const updateHospital = ( req, res = response) => {
+const updateHospital = async ( req, res = response) => {
 
-    res.json({
-        ok: true,
-        message: 'updateHospital works!'
-    })
+    const id = req.params.id;      
+    const userId = req.id;      
+
+    try {
+
+        const hospitalDB = await Hospital.findById( id );
+
+        if( !hospitalDB ) {
+            return res.status(404).json({
+                ok: false,
+                message: 'Hospital not found.'
+            });
+        }
+
+        const hospitalChanges = {
+            ...req.body,
+            user: userId
+        };
+
+        const updatedHospital = await Hospital.findByIdAndUpdate( id, hospitalChanges, { new: true } ); 
+        
+        res.json({
+            ok: true,
+            hospital: updatedHospital 
+        });
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            message: 'Contact an administrator.'
+        });
+        
+    }
 }
 
-const deleteHospital = ( req, res = response) => {
+const deleteHospital = async ( req, res = response) => {
 
-    res.json({
-        ok: true,
-        message: 'deleteHospital works!'
-    })
+    const id = req.params.id;        
+
+    try {
+
+        const hospitalDB = await Hospital.findById( id );
+
+        if( !hospitalDB ) {
+            return res.status(404).json({
+                ok: false,
+                message: 'Hospital not found.'
+            });
+        }
+
+        await Hospital.findByIdAndDelete( id ); 
+        
+        res.json({
+            ok: true,
+            message: 'Hospital deleted successfully.'  
+        });
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            message: 'Contact an administrator.'
+        });
+        
+    }
 }
 
 module.exports = {

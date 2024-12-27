@@ -32,11 +32,15 @@ router.post('/',
 
 router.put('/:id',   
     [
+        validateJWT,
+        check('name', 'Name is required').not().isEmpty(),
+        validateFields
     ], 
     updateHospital
 );
 
-router.delete('/:id',   
+router.delete('/:id',
+    validateJWT,   
     deleteHospital
 );
 

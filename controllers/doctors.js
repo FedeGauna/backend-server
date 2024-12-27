@@ -1,67 +1,113 @@
-const { response } = require('express');
+const { response } = require("express");
 
-const Doctor = require('../models/doctor');
+const Doctor = require("../models/doctor");
 
 const getDoctors = async (req, res = response) => {
+  const doctors = await Doctor.find()
+    .populate("hospital", "name")
+    .populate("user", "name");
 
-    const doctors = await Doctor.find()
-                                .populate('hospital', 'name')
-                                .populate('user', 'name');
-
-    res.json({
-        ok: true,
-       doctors
-    });
-}
+  res.json({
+    ok: true,
+    doctors,
+  });
+};
 
 const addDoctor = async (req, res = response) => {
+  const id = req.id;
+  const doctor = new Doctor({
+    user: id,
+    ...req.body,
+  });
 
-    const id = req.id;      
-    const doctor = new Doctor({
-        user: id,
-        ...req.body
+  try {
+    const doctorDB = await doctor.save();
+
+    res.json({
+      ok: true,
+      doctor: doctorDB,
     });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      message: "Contact an administrator.",
+    });
+  }
+};
 
-    try {
+const updateDoctor = async (req, res = response) => {
 
-        const doctorDB = await doctor.save();
-        
-        res.json({
-            ok: true,
-            doctor: doctorDB 
-        });
+  const id = req.params.id;
+  const userId = req.id;
 
-        
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            message: 'Contact an administrator.'
-        });
-        
+  try {
+    const doctorDB = await Doctor.findById(id);
+
+    if (!doctorDB) {
+      return res.status(404).json({
+        ok: false,
+        message: "Doctor not found.",
+      });
     }
-}
 
-const updateDoctor = (req, res = response) => {
+    const doctorChanges = {
+      ...req.body,
+      user: userId,
+    };
+
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      id,
+      doctorChanges,
+      { new: true }
+    );
 
     res.json({
-        ok: true,
-        message: 'updateDoctor works!'
+      ok: true,
+      Doctor: updatedDoctor,
     });
-}
-
-const deleteDoctor = (req, res = response) => {
-
-    res.json({
-        ok: true,
-        message: 'deleteDoctor works!'
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      message: "Contact an administrator.",
     });
-}
+  }
+};
 
+const deleteDoctor = async (req, res = response) => {
+
+    const id = req.params.id;
+  
+    try {
+      const doctorDB = await Doctor.findById(id);
+  
+      if (!doctorDB) {
+        return res.status(404).json({
+          ok: false,
+          message: "Doctor not found.",
+        });
+      }
+  
+     await Doctor.findByIdAndDelete( id ); 
+  
+      res.json({
+        ok: true,
+        message: 'Doctor deleted successfully.'  
+      });
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        ok: false,
+        message: "Contact an administrator.",
+      });
+    }
+};
 
 module.exports = {
-    getDoctors,
-    addDoctor,
-    updateDoctor,
-    deleteDoctor
-}
+  getDoctors,
+  addDoctor,
+  updateDoctor,
+  deleteDoctor,
+};
